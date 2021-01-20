@@ -1,9 +1,9 @@
 #!/bin/bash
 # @Author: Aliao  
 # @Repository: https://github.com/vod-ka   
-# @Date: 2021-01-18 23:30:08  
+# @Date: 2021-01-20 21:57:23  
 # @Last Modified by:   Aliao  
-# @Last Modified time: 2021-01-18 23:30:08
+# @Last Modified time: 2021-01-20 21:57:23
 
 A=$(uname -r | cut -d "." -f1)
 SCRIPT="docker_install.sh"
