@@ -1,58 +1,60 @@
 #!/bin/bash
 # @Author: Aliao  
-# @Repository: https://github.com/vod-ka   
+# @Repository: https://github.com/vod-ka/docker_oneclick_install   
 # @Date: 2021-01-20 21:57:23  
 # @Last Modified by:   Aliao  
-# @Last Modified time: 2021-01-20 21:57:23
+# @Last Modified time: 2021-01-21 18:08:40
 
 A=$(uname -r | cut -d "." -f1)
 SCRIPT="docker_install.sh"
 
-#检验内核版本
+Green(){
+    echo -e "\033[32;01m$1\033[0m"
+}
+
+Red(){
+    echo -e "\033[31;01m$1\033[0m"
+}
+
+Blue(){
+    echo -e "\033[34;01m$1\033[0m"
+}
+
 CheckVersion(){
     if [ $A -ge 3 ]
     then
         DockerInstall
     else
-        echo "内核版本低于3.10,请升级内核版本"
+        Red "内核版本低于3.10,请升级内核版本"
     fi
 }
 
-#安装docker
 DockerInstall(){
-    #卸载旧版本
     yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate  docker-engine > /dev/null
-    #设置仓库
     yum install -y yum-utils
     yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    #安装docker引擎
     yum -y install docker-ce docker-ce-cli containerd.io
-    #设置开机自启和运行docker
     systemctl enable docker > /dev/null
     systemctl start docker
-    echo "docker 安装成功"
-    echo "....."
-    echo ".........."
-    echo "..............."
-    echo "....................."
+    Green "docker 安装成功"
+    Green "....."
+    Green ".........."
+    Green "..............."
+    Green "....................."
 }
 
-#启动docker
 STARTDocker(){
     systemctl start docker
 }
 
-#停止docker
 STOPDocker(){
     systemctl stop docker
 }
 
-#重启docker
 RELOADDocker(){
     systemctl reload docker
 }
 
-#测试doucker
 TESTDocker(){
     docker run hello-world
     echo
@@ -60,41 +62,39 @@ TESTDocker(){
     echo
 }
 
-#卸载docker
 REMOVEDocker(){
     yum remove -y docker-ce-cli.x86_64 docker-ce.x86_64 docker-ce-rootless-extras.x86_64
     find / -name docker -exec rm -rf {} \;
-    echo "----------------------------------卸载docker完成"
+    Green "----------------------------------卸载docker完成"
     find / -name $SCRIPT -exec rm -f {} \;
 }
 
-#脚本菜单
 STARTMenu(){
     clear
-    echo "========================================================================="
-    echo "#                                                                       #"
-    echo "#                  @Name: docker_oneclick_install_script                #"
-    echo "#                  @Author: Aliao                                       #"
-    echo "#                  @Repository: https://github.com/vod-ka               #"
-    echo "#                                                                       #"
-    echo "========================================================================="
+    Red "================================================================================="
+    Red "#                                                                               #"
+    Red "#          @Name: docker_oneclick_install_script                                #"
+    Red "#          @Author: Aliao                                                       #"
+    Red "#          @Repository: https://github.com/vod-ka/docker_oneclick_install       #"
+    Red "#                                                                               #"
+    Red "================================================================================="
     echo "                          "
     echo "                          "
     echo "                          "
-    echo "1，安装docker"
-    echo "--------------------------"
-    echo "2，启动docker"
-    echo "--------------------------"
-    echo "3，停止docker"
-    echo "--------------------------"
-    echo "4，重启docker"
-    echo "--------------------------"
-    echo "5，检测docker"
-    echo "--------------------------"
-    echo "6，卸载docker"
-    echo "--------------------------"
-    echo "0，exit"
-    echo "--------------------------"
+    Green "1，安装docker"
+    Blue "--------------------------"
+    Green "2，启动docker"
+    Blue "--------------------------"
+    Green "3，停止docker"
+    Blue "--------------------------"
+    Green "4，重启docker"
+    Blue "--------------------------"
+    Green "5，检测docker"
+    Blue "--------------------------"
+    Green "6，卸载docker"
+    Blue "--------------------------"
+    Green "0，exit"
+    Blue "--------------------------"
     read -p "输入数字执行: " MUN
     case "$MUN" in
         1)
