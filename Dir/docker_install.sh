@@ -37,10 +37,14 @@ DockerInstall(){
     systemctl enable docker > /dev/null
     systemctl start docker
     Green "docker 安装成功"
-    Green "....."
+    Green ".....10秒后继续"
+    sleep 3
     Green ".........."
+    sleep 3
     Green "..............."
+    sleep 3
     Green "....................."
+    sleep 1
 }
 
 STARTDocker(){
