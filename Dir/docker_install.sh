@@ -61,9 +61,7 @@ RELOADDocker(){
 
 TESTDocker(){
     docker run hello-world
-    echo
-    echo
-    echo
+    sleep 5
 }
 
 REMOVEDocker(){
@@ -75,16 +73,15 @@ REMOVEDocker(){
 
 STARTMenu(){
     clear
-    Red "================================================================================="
+    Red "#===============================================================================#"
     Red "#                                                                               #"
     Red "#          @Name: docker_oneclick_install_script                                #"
     Red "#          @Author: Aliao                                                       #"
     Red "#          @Repository: https://github.com/vod-ka/docker_oneclick_install       #"
     Red "#                                                                               #"
-    Red "================================================================================="
-    echo "                          "
-    echo "                          "
-    echo "                          "
+    Red "#===============================================================================#"
+    echo 
+    echo 
     Green "1，安装docker"
     Blue "--------------------------"
     Green "2，启动docker"
