@@ -21,7 +21,7 @@ Blue(){
 }
 
 CheckVersion(){
-    if [ $A -ge 3 ]
+    if [ "$A" -ge 3 ]
     then
         DockerInstall
     else
@@ -29,11 +29,44 @@ CheckVersion(){
     fi
 }
 
+#检测系统
+check_os(){
+    osver=$(sed -n '/^ID=/p' /etc/os-release | sed 's/ID=//;s/"//;s/"//')
+    if [ "$osver" = centos ]
+    then
+        Blue "当前系统发行版本为：$osver"
+        Action="yum"
+    elif [ "$osver" = debian ]
+    then
+        Blue "当前系统发行版本为：$osver"
+        Action="apt-get"
+        exit 1
+    else
+        Red "当前系统发行版本为：$osver,当前脚本不支持"
+        exit 1
+    fi
+}
+
 DockerInstall(){
-    yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate  docker-engine > /dev/null
-    yum install -y yum-utils
-    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-    yum -y install docker-ce docker-ce-cli containerd.io
+    if [ "$osver" = centos ]
+    then
+        yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate  docker-engine > /dev/null
+        rm -rf /var/lib/docker > /dev/null
+        yum install -y yum-utils
+        yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+        yum -y install docker-ce docker-ce-cli containerd.io
+    elif [ "$osver" = debian ]
+    then
+        apt-get remove docker docker-engine docker.io containerd runc > /dev/null
+        rm -rf /var/lib/docker > /dev/null
+        apt-get update && apt-get install apt-transport-https ca-certificates curl gnupg lsb-release
+        curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+        echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+        $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+        apt-get update && apt-get install docker-ce docker-ce-cli containerd.io
+    else
+        Red "脚本不支持当前系统！"
+    fi    
     systemctl enable docker > /dev/null
     systemctl start docker
     Green "docker 安装成功"
@@ -65,7 +98,8 @@ TESTDocker(){
 }
 
 REMOVEDocker(){
-    yum remove -y docker-ce-cli.x86_64 docker-ce.x86_64 docker-ce-rootless-extras.x86_64
+    $Action remove -y docker-ce docker-ce-cli containerd.io
+    rm -rf /var/lib/{docker,containerd}
     find / -name docker -exec rm -rf {} \;
     Green "----------------------------------卸载docker完成"
     find / -name $SCRIPT -exec rm -f {} \;
