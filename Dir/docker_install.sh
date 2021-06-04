@@ -134,6 +134,8 @@ STARTMenu(){
     case "$MUN" in
         1)
         CheckVersion
+        check_os
+        DockerInstall
         STARTMenu
         ;;
         2)
